@@ -1,4 +1,4 @@
-package com.irit;
+package com.irit.main;
 
 /**
  * Created by IDA on 02/02/2017.

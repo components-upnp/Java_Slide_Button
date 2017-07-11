@@ -3,9 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.irit;
+package com.irit.main;
 
+import com.irit.main.State;
+import com.irit.upnp.DefilementService;
+import com.irit.xml.GenerateurXml;
 import org.fourthline.cling.model.meta.LocalService;
+import org.fourthline.cling.model.types.UDN;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import java.util.HashMap;
 
 /**
  *
@@ -14,13 +22,16 @@ import org.fourthline.cling.model.meta.LocalService;
 public class DefilementFrame extends javax.swing.JFrame {
 
     
-    private LocalService<Defilement> defilementService;
+    private LocalService<DefilementService> defilementService;
+    private String udn;
+    private GenerateurXml gen = new GenerateurXml();
     /**
      * Creates new form DefilementFrame
      */
-    public DefilementFrame(LocalService<Defilement> d) {
+    public DefilementFrame(LocalService<DefilementService> d, UDN u) {
         initComponents();
         this.defilementService = d;
+        udn = u.toString();
     }
 
     /**
@@ -40,14 +51,26 @@ public class DefilementFrame extends javax.swing.JFrame {
         gauche.setText("<");
         gauche.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                gaucheActionPerformed(evt);
+                try {
+                    gaucheActionPerformed(evt);
+                } catch (TransformerException e) {
+                    e.printStackTrace();
+                } catch (ParserConfigurationException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
         droite.setText(">");
         droite.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                droiteActionPerformed(evt);
+                try {
+                    droiteActionPerformed(evt);
+                } catch (TransformerException e) {
+                    e.printStackTrace();
+                } catch (ParserConfigurationException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -75,13 +98,20 @@ public class DefilementFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void gaucheActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gaucheActionPerformed
-        this.defilementService.getManager().getImplementation().setTarget(State.GAUCHE);
+    private void gaucheActionPerformed(java.awt.event.ActionEvent evt) throws TransformerException, ParserConfigurationException {//GEN-FIRST:event_gaucheActionPerformed
+        HashMap<String,String> args = new HashMap<String, String>();
+        args.put("UDN",udn);
+        args.put("COMMANDE", "GAUCHE");
+        this.defilementService.getManager().getImplementation().setTarget(gen.getDocXml(args));
+        this.defilementService.getManager().getImplementation().setTarget("");
     }//GEN-LAST:event_gaucheActionPerformed
 
-    private void droiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_droiteActionPerformed
-        this.defilementService.getManager().getImplementation().setTarget(State.DROITE);
-    }//GEN-LAST:event_droiteActionPerformed
+    private void droiteActionPerformed(java.awt.event.ActionEvent evt) throws TransformerException, ParserConfigurationException {//GEN-FIRST:event_droiteActionPerformed
+        HashMap<String,String> args = new HashMap<String, String>();
+        args.put("UDN",udn);
+        args.put("COMMANDE", "DROITE");
+        this.defilementService.getManager().getImplementation().setTarget(gen.getDocXml(args));
+        this.defilementService.getManager().getImplementation().setTarget("");}//GEN-LAST:event_droiteActionPerformed
 
    
     

@@ -1,5 +1,6 @@
-package com.irit;
+package com.irit.upnp;
 
+import com.irit.main.DefilementFrame;
 import org.fourthline.cling.UpnpService;
 import org.fourthline.cling.UpnpServiceImpl;
 import org.fourthline.cling.binding.LocalServiceBindingException;
@@ -26,13 +27,7 @@ public class DefilementServer implements Runnable {
      */
 
     private DefilementFrame frameC;
-
-    public static void main(String[] args) throws Exception {
-        // Start a user thread that runs the UPnP stack
-        Thread serverThread = new Thread(new DefilementServer());
-        serverThread.setDaemon(false);
-        serverThread.start();
-    }
+    private UDN udn;
 
     /**
      * Run the UPnP service
@@ -75,9 +70,12 @@ public class DefilementServer implements Runnable {
         /**
          * Description du Device
          */
+
+        udn = UDN.uniqueSystemIdentifier("DefilementService");
+
         DeviceIdentity identity =
                 new DeviceIdentity(
-                        UDN.uniqueSystemIdentifier("Defilement")
+                        udn
                 );
 
         DeviceType type =
@@ -85,7 +83,7 @@ public class DefilementServer implements Runnable {
 
         DeviceDetails details =
                 new DeviceDetails(
-                        "Friendly Defilement",					// Friendly Name
+                        "Friendly DefilementService",					// Friendly Name
                         new ManufacturerDetails(
                                 "CreaTech",								// Manufacturer
                                 ""),								// Manufacturer URL
@@ -100,15 +98,15 @@ public class DefilementServer implements Runnable {
         // Ajout du service
 
 
-        LocalService<Defilement> defilementService =
-                new AnnotationLocalServiceBinder().read(Defilement.class);
+        LocalService<DefilementService> defilementService =
+                new AnnotationLocalServiceBinder().read(DefilementService.class);
 
         defilementService.setManager(
-                new DefaultServiceManager(defilementService, Defilement.class)
+                new DefaultServiceManager(defilementService, DefilementService.class)
         );
 
 
-        new DefilementFrame(defilementService).setVisible(true);
+        new DefilementFrame(defilementService, udn).setVisible(true);
 
 
         // retour en cas de 1 service

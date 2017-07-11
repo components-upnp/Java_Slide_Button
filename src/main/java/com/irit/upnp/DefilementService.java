@@ -1,5 +1,6 @@
-package com.irit;
+package com.irit.upnp;
 
+import com.irit.main.State;
 import org.fourthline.cling.binding.annotations.*;
 
 import java.beans.PropertyChangeSupport;
@@ -14,11 +15,11 @@ import java.beans.PropertyChangeSupport;
         serviceType = @UpnpServiceType(value = "DefilementS", version = 1)
 )
 
-public class Defilement {
+public class DefilementService {
 
     private final PropertyChangeSupport propertyChangeSupport;
 
-    public Defilement() {
+    public DefilementService() {
         this.propertyChangeSupport = new PropertyChangeSupport(this);
     }
 
@@ -33,14 +34,14 @@ public class Defilement {
      * Permet d'envoyer le message de l'�tat dans lequel la lampe doit �tre
      */
     @UpnpStateVariable(defaultValue = "GAUCHE", sendEvents = false)
-    private State target = State.DROITE;
+    private String target = "";
     
     /**
      * Variable d'etat �venemmenc�e
      * Permet de v�rifier si la lampe est bien dans le bon �tat.
      */
     @UpnpStateVariable(defaultValue = "GAUCHE")
-    private State status = State.GAUCHE;
+    private String status = "";
     
     /**
      * Variable qui me permet d'emmettre des �venements UPnP et JavaBean
@@ -52,15 +53,15 @@ public class Defilement {
      * @param newTargetValue
      */
     @UpnpAction
-    public void setTarget(@UpnpInputArgument(name = "NewTargetValue") State newTargetValue) {
+    public void setTarget(@UpnpInputArgument(name = "NewTargetValue") String newTargetValue) {
 
     	// [FACULTATIF] je garde la l'ancienne valeur pour emmettre l'evenenment 
-        State targetOldValue = target;
+        String targetOldValue = target;
         target = newTargetValue;
         
       
         
-        State statusOldValue = status;
+        String statusOldValue = status;
         status = newTargetValue;
 
         // Envoie un �venement UPnP, c'est le nom de la variable d'etat qui lance l'�venement
@@ -82,7 +83,7 @@ public class Defilement {
      * @return boolean
      */
     @UpnpAction(out = @UpnpOutputArgument(name = "RetTargetValue"))
-    public State getTarget() {
+    public String getTarget() {
         return target;
     }
 
@@ -92,7 +93,7 @@ public class Defilement {
      * @return boolean
      */
     @UpnpAction(out = @UpnpOutputArgument(name = "ResultStatus"))
-    public State getStatus() {
+    public String getStatus() {
     	// Pour ajouter des informations suppl�mentaires UPnP en cas d'erreur :
         // throw new ActionException(ErrorCode.ACTION_NOT_AUTHORIZED);
         return status;
